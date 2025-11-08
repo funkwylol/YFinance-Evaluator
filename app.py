@@ -1,6 +1,7 @@
 import os
 import json
 import yfinance as yf
+from flask import Flask, render_template, request, jsonify
 
 def fetch_and_save(ticker_symbol: str = "MSFT", filename: str = "MSFT_Data.json", history_period: str = "1mo") -> str:
     """Fetch data for `ticker_symbol` using yfinance and save serializable JSON to `filename`.
@@ -49,7 +50,22 @@ def fetch_and_save(ticker_symbol: str = "MSFT", filename: str = "MSFT_Data.json"
 
     return os.path.abspath(filename)
 
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/stock")
+def stock():
+    ticker = request.args.get("ticker")
+    if not ticker:
+        return jsonify({"error": "No ticker provided"}), 400
+    data = yf.Ticker(ticker).info
+    return jsonify(data)
 
 if __name__ == "__main__":
-    out_path = fetch_and_save("MSFT", "MSFT_Data.json", history_period="1mo")
-    print(f"Saved data to: {out_path}")
+    app.run(debug=False)
+
+
+

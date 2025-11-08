@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stock Lookup</title>
+</head>
+<body>
+  <h1>Get Stock Info</h1>
+  <input id="ticker" placeholder="Enter stock ticker">
+  <button onclick="getStock()">Get Data</button>
+  <pre id="output"></pre>
+
+  <script>
+  async function getStock() {
+    const ticker = document.getElementById("ticker").value;
+    const res = await fetch(`/stock?ticker=${ticker}`);
+    const data = await res.json();
+    document.getElementById("output").textContent = JSON.stringify(data, null, 2);
+  }
+  </script>
+</body>
+</html>
